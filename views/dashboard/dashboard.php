@@ -13,6 +13,9 @@ session_start();
     header("location: ../login.php");
   }
   include 'products.php';
+
+  $sqltable = "SELECT * FROM products";
+  $resulttable =mysqli_query($connect_database, $sqltable);
 ?>
 
 <!DOCTYPE html>
@@ -382,80 +385,49 @@ session_start();
 
               <div class="table-responsive">
                 <!-- <button class="btn btn-info">Add Product</button><br><br> -->
+                <?php if(mysqli_num_rows($resulttable)>0){ ?>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th>Product Name</th>
-                      <th>No. of Products</th>
-                      <th>Product Cost</th>
-                      <th>No. of Barcodes</th>
-                      <th>Barcodes-Issued Date</th>
-                      <th>Barcodes-Expiry Date</th>
+                      <th>Product Price</th>
+                      <th>Product Details</th>
+                      <th>Product MFG (manufactured date)</th>
+                      <th>Product EXP (expiry date)</th>
+                      <th>Product Quantity</th>
                     </tr>
                   </thead>
 
                   <tbody>
-  <tr>
-                      <td>Coke Soda</td>
-                      <td>10</td>
-                      <td>300</td>
-                      <td>10</td>
-                      <td>2011/04/25</td>
-                      <td>2020/04/25</td>
-                    </tr>
+
+                    <?php 
+                      $i=0;
+                      while($row= mysqli_fetch_array($resulttable)){
+
+
+                     ?>
                     <tr>
-                      <td>Coke Soda</td>
-                      <td>100</td>
-                      <td>300</td>
-                      <td>10</td>
-                      <td>2011/04/25</td>
-                      <td>2020/04/25</td>
+                      <td><?php echo $row['productname']; ?></td>
+                      <td><?php echo $row['productprice']; ?></td>
+                      <td><?php echo $row['productspecification']; ?></td>
+                      <td><?php echo $row['mfgdate']; ?></td>
+                      <td><?php echo $row['expdate']; ?></td>
+                      <td><?php echo $row['productqty']; ?></td>
                     </tr>
-                    <tr>
-                      <td>Fanta Soda</td>
-                      <td>100</td>
-                      <td>300</td>
-                      <td>10</td>
-                      <td>2011/04/25</td>
-                      <td>2020/04/25</td>
-                    </tr>
-                    <tr>
-                      <td>Fanta Soda</td>
-                      <td>100</td>
-                      <td>300</td>
-                      <td>10</td>
-                      <td>2011/04/25</td>
-                      <td>2020/04/25</td>
-                    </tr>
-                    <tr>
-                      <td>Coke Soda</td>
-                      <td>100</td>
-                      <td>300</td>
-                      <td>10</td>
-                      <td>2011/04/25</td>
-                      <td>2020/04/25</td>
-                    </tr>
-                    <tr>
-                      <td>Fanta Soda</td>
-                      <td>100</td>
-                      <td>300</td>
-                      <td>10</td>
-                      <td>2011/04/25</td>
-                      <td>2020/04/25</td>
-                    </tr>
-                                          <tfoot>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>No. of Products</th>
-                      <th>Product Cost (ugshs)</th>
-                      <th>No. of Barcodes</th>
-                      <th>Barcodes-Issued Date</th>
-                      <th>Barcodes-Expiry Date</th>
-                    </tr>
-                  </tfoot>
-                  </tbody>
-                </table>
-              </div>
+                    <?php 
+                      $i++;
+                    }
+                     ?>
+                   </tbody>
+                 </table>
+                 <?php 
+
+                  }
+                  else{
+                    echo "No result found";
+                  }
+                  ?>
+                                 </div>
             </div>
           </div>
 
@@ -552,43 +524,89 @@ session_start();
         </div>
         <div class="modal-body">
 
-          
-          <form method="post" action="products.php">
+          <div class="alert alert-success alert-dismissible" id="success" style="display:none;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+         </div>
+          <form id="prodform" method="POST">
             <div class="form-group">
               <label for="pname">Product Name</label>
-              <input type="text" class="form-control" id="pname" name="pname" aria-describedby="pname" placeholder="Enter product name">
-              <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $pname_error; ?></span>
+              <input type="text" class="form-control" id="pname" name="pname" aria-describedby="pname" placeholder="Enter product name" required>
+<!--               <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $pname_error; ?></span> -->
             </div>
             <div class="form-group">
               <label for="pprice">Product Price</label>
               <input type="number" class="form-control" id="pprice" name="pprice">
-              <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $pprice_error; ?></span>
+<!--               <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $pprice_error; ?></span> -->
             </div>
             <div class="form-group">
               <label for="pdetails">Product Details</label>
-              <input type="text" class="form-control" name="pdetails" id="pdetails" aria-describedby="rate" placeholder="product details eg: weight,size">
-              <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $pdetails_error; ?></span>
+              <input type="text" class="form-control" name="pdetails" id="pdetails" aria-describedby="rate" placeholder="product details eg: weight,size" required>
+<!--               <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $pdetails_error; ?></span> -->
             </div>
             <div class="form-group">
               <label for="qty">Product Quantity </label>
-              <input type="number" class="form-control" id="qty" name="qty" placeholder="Number of items">
-              <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $qty_error; ?></span>
+              <input type="number" class="form-control" id="qty" name="qty" placeholder="Number of items" required>
+<!--               <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $qty_error; ?></span> -->
             </div>
             <div class="form-group">
               <label for="mfg">Product MFG </label>
-              <input type="date" class="form-control" id="mfg" name="mfg" placeholder="date manufactured">
-              <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $mfgdate_error; ?></span>
+              <input type="date" class="form-control" id="mfg" name="mfg" placeholder="date manufactured" required>
+<!--               <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $mfgdate_error; ?></span> -->
             </div>
             <div class="form-group">
               <label for="exp">Product EXP </label>
-              <input type="date" class="form-control" id="exp" name="exp" placeholder="expiry date">
-              <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $expdate_error; ?></span>
+              <input type="date" class="form-control" id="exp" name="exp" placeholder="expiry date" required>
+<!--               <span class="help-block" style="color: rgba(255,10,51,1);"><?php echo $expdate_error; ?></span> -->
             </div>
 
-            <button type="submit" name="addproduct" class="btn btn-primary">Submit</button>
+            <button title="addproduct" type="submit" id="addproduct" name="addproduct" class="btn btn-primary">Submit</button>
       </form>
     </div>
         </div>
+
+
+<script>
+$(document).ready(function() {
+  $('#addproduct').('submit', function(e) {
+    e.preventDefault();
+    debugger
+    
+    $("#addproduct").attr("disabled", "disabled");
+    var pname = $('#pname').val();
+    var pprice = $('#ppricel').val();
+    var pdetails = $('#pdetails').val();
+    var qty = $('#qty').val();
+    var mfg = $('#mfg').val();
+    var exp = $('#exp').val();
+    if(pname!="" && pprice!="" && pdetails!="" && qty!="" && mfg != "" && exp!=""){
+      $.ajax({
+
+        url: "products.php",
+        type: "POST",
+        data: $(this).serializer(),
+        cache: false,
+        success: function(dataResult){
+          var dataResult = JSON.parse(dataResult);
+          if(dataResult.statusCode==200){
+            $("#addproduct").removeAttr("disabled");
+            $('#prodform').find('input:text').val('');
+            $("#success").show();
+            $('#success').html('Data added successfully !');            
+          }
+          else if(dataResult.statusCode==201){
+             alert("Error occured !");
+          }
+          
+        }
+      });
+    }
+    else{
+      alert('Please fill all the field !');
+    }
+  });
+});
+</script>
+
 <!--         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
           <a class="btn btn-primary" href="../../index.html">Logout</a>
@@ -605,61 +623,6 @@ session_start();
           </div>
         </div>
       </footer>
-      <!-- End of Footer -->
-<script type="text/javascript">
-  $(document).ready(function(){
-    function fetchData(){
-      $.ajax({
-        url:'selectproduct.php',
-        method : 'POST',
-        success : function(data){
-          $('#productModal').html(data);
-
-        }
-      });
-    }
-    fetchData();
-    $(document).on('click', '#btn_add', function(){
-      var productname = $('#productname').text();
-      var productprice = $('#productprice').text();
-      var productspecification = $('#productspecification').text();
-      var mfgdate = $('#mfgdate').text();
-      var expdate = $('#expdate').text();
-
-      if(productname == ''){
-        alert('please add product name');
-        return false;
-      }
-       if(productprice == ''){
-        alert('please add price ');
-        return false;
-      }
-    if(productspecification == ''){
-        alert('please add product details');
-        return false;
-      }
-     if(mfgdate == ''){
-        alert('please add mfg date');
-        return false;
-      }
-           if(expdate == ''){
-        alert('please add exp date');
-        return false;
-      }
-      $.ajax({
-        url: 'insert.php',
-        method: 'POST',
-        data:{productname:productname, productprice:productprice, productspecification:productspecification,mfgdate:mfgdate, expdate:expdate},
-        dataType : 'text',
-        success :function(data){
-          alert(data);
-          fetchData();
-        }
-      });
-
-    });
-  });
-</script>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
